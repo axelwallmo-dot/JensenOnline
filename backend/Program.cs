@@ -60,7 +60,7 @@ builder.Services.AddAntiforgery(options =>
 
     // False only because our current local POC uses HTTP.
     // Change to Always when HTTPS is configured.
-    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 // Configure authentication cookie
@@ -70,7 +70,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.SameSite = SameSiteMode.Strict;
 
     // Local HTTP development only.
-    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
     // Return API status codes instead of HTML redirects.
     options.Events.OnRedirectToLogin = context =>
@@ -108,6 +108,7 @@ using (var scope = app.Services.CreateScope())
     await RoleSeeder.SeedRolesAsync(services);
     
     await ProductSeeder.SeedProductsAsync(services);
+
 }
 
 

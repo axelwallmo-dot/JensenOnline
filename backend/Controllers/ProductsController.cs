@@ -8,6 +8,7 @@ namespace JensenOnline.API.Controllers
 {
     [ApiController]
     [Route("api/products")]
+    [AutoValidateAntiforgeryToken]
     public class ProductsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
