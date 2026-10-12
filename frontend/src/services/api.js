@@ -1,9 +1,9 @@
 
-// Central API helper for JENSENOnline
+// Central API-hjälpare för JENSENOnline.
 
 let csrfToken = null;
 
-// Fetch a fresh CSRF token from the backend
+// Hämtar en ny CSRF-token från backend.
 export async function getCsrfToken() {
   const response = await fetch("/api/security/csrf-token", {
     method: "GET",
@@ -22,7 +22,7 @@ export async function getCsrfToken() {
   return csrfToken;
 }
 
-// Use this for API requests that change data
+// Används för API-anrop som ändrar data.
 export async function secureFetch(url, options = {}) {
   const method = (options.method || "GET").toUpperCase();
 
@@ -31,7 +31,7 @@ export async function secureFetch(url, options = {}) {
   if (
     ["POST", "PUT", "PATCH", "DELETE"].includes(method)
   ) {
-    // Fetch a fresh token for every modifying request.
+    // Hämta ny token för varje ändrande förfrågan.
     const token = await getCsrfToken();
 
     headers.set("X-CSRF-TOKEN", token);

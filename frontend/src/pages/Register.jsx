@@ -13,7 +13,7 @@ function Register({ onNavigate }) {
     e.preventDefault();
     setMessage("");
 
-    // Basic frontend validation
+    // Enkel validering i frontend innan registrering.
     if (password !== confirmPassword) {
       setMessage("Passwords do not match.");
       return;
@@ -39,7 +39,7 @@ function Register({ onNavigate }) {
         setPassword("");
         setConfirmPassword("");
       } else {
-        // Do not display raw server errors to users.
+        // Visar inte råa fel från servern.
         setMessage(
           "Registration failed. Check your details and try again."
         );
@@ -54,12 +54,10 @@ function Register({ onNavigate }) {
   return (
     <section className="auth-section">
       <div className="auth-card">
-
         <h2>Create Account</h2>
         <p>Register to start shopping at JENSENOnline.</p>
 
         <form onSubmit={handleRegister}>
-
           <label htmlFor="register-email">Email</label>
           <input
             id="register-email"
@@ -100,7 +98,6 @@ function Register({ onNavigate }) {
           <button type="submit" disabled={loading}>
             {loading ? "Creating account..." : "Register"}
           </button>
-
         </form>
 
         {message && <p role="status">{message}</p>}
@@ -115,7 +112,6 @@ function Register({ onNavigate }) {
             Login here
           </button>
         </p>
-
       </div>
     </section>
   );

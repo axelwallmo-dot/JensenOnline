@@ -6,9 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register database
-
-// Always use the same SQLite database file
+// Använder samma SQLite-fil i utvecklingen.
 var databasePath = Path.Combine(
     builder.Environment.ContentRootPath,
     "jensenonline.db"
@@ -18,38 +16,30 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite($"Data Source={databasePath}")
 );
 
-
-// Configure Identity
+// Säkerhetsinställningar för lösenord och användare.
 builder.Services
     .AddIdentityApiEndpoints<ApplicationUser>(options =>
     {
-        // Password requirements
         options.Password.RequiredLength = 8;
         options.Password.RequireDigit = true;
         options.Password.RequireUppercase = true;
         options.Password.RequireLowercase = true;
         options.Password.RequireNonAlphanumeric = true;
 
-        // Account lockout
         options.Lockout.DefaultLockoutTimeSpan =
             TimeSpan.FromMinutes(15);
 
         options.Lockout.MaxFailedAccessAttempts = 5;
         options.Lockout.AllowedForNewUsers = true;
 
-        // Unique email addresses
         options.User.RequireUniqueEmail = true;
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Add controllers
 builder.Services.AddControllersWithViews();
-
-// Authorization
 builder.Services.AddAuthorization();
 
-// Configure CSRF protection
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = "X-CSRF-TOKEN";
@@ -57,22 +47,16 @@ builder.Services.AddAntiforgery(options =>
     options.Cookie.Name = "JensenOnline.Antiforgery";
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Strict;
-
-    // False only because our current local POC uses HTTP.
-    // Change to Always when HTTPS is configured.
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
-// Configure authentication cookie
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Strict;
-
-    // Local HTTP development only.
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
-    // Return API status codes instead of HTML redirects.
+    // Returnerar statuskoder istället för HTML-omdirigering.
     options.Events.OnRedirectToLogin = context =>
     {
         context.Response.StatusCode = 401;
@@ -86,45 +70,25 @@ builder.Services.ConfigureApplicationCookie(options =>
     };
 });
 
-
-
 var app = builder.Build();
 
-// Create database roles on startup.
-
-// Apply database migrations and create roles on startup.
+// Skapar roller och seed-data vid start.
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    // Get database context
     var dbContext = services
         .GetRequiredService<ApplicationDbContext>();
 
-    // Apply pending migrations before using the database
     await dbContext.Database.MigrateAsync();
 
-    // Create Admin and Customer roles
     await RoleSeeder.SeedRolesAsync(services);
-    
     await ProductSeeder.SeedProductsAsync(services);
-
 }
 
-
-
-// HTTPS redirection
-// app.UseHttpsRedirection();
-
-// Authentication & Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Map Identity endpoints
-// app.MapGroup("/api/auth")
-//    .MapIdentityApi<ApplicationUser>();
-
-// Map controllers
 app.MapControllers();
 
 app.Run();

@@ -7,32 +7,22 @@ import Admin from "./pages/Admin";
 import "./App.css";
 
 function App() {
-  // ========================================
-  // STATES
-  // ========================================
-
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState([]);
   const [orderLoading, setOrderLoading] = useState(false);
   const [orderMessage, setOrderMessage] = useState("");
   const [page, setPage] = useState("home");
 
-  // User contains email and roles
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
 
-  // Products from backend
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
   const [productsError, setProductsError] = useState("");
 
-  // Check if current user is an Admin
   const isAdmin = user?.roles?.includes("Admin") ?? false;
 
-  // ========================================
-  // CHECK CURRENT LOGIN SESSION
-  // ========================================
-
+  // Hämtar nuvarande användare vid laddning.
   useEffect(() => {
     const checkSession = async () => {
       try {
@@ -56,10 +46,6 @@ function App() {
 
     checkSession();
   }, []);
-
-  // ========================================
-  // FETCH PRODUCTS FROM BACKEND
-  // ========================================
 
   const fetchProducts = async () => {
     setProductsLoading(true);
@@ -86,17 +72,9 @@ function App() {
     fetchProducts();
   }, []);
 
-  // ========================================
-  // PRODUCT SEARCH
-  // ========================================
-
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase())
   );
-
-  // ========================================
-  // SHOPPING CART
-  // ========================================
 
   const addToCart = (product) => {
     setCart((currentCart) => [
@@ -115,10 +93,6 @@ function App() {
     (total, product) => total + product.price,
     0
   );
-
-  // ========================================
-  // LOGIN
-  // ========================================
 
   const handleLogin = async () => {
     try {
@@ -140,10 +114,6 @@ function App() {
       setPage("login");
     }
   };
-
-  // ========================================
-  // LOGOUT
-  // ========================================
 
   const handleLogout = async () => {
     try {
@@ -167,7 +137,6 @@ function App() {
     }
   };
 
-  
   const handlePlaceOrder = async () => {
     if (!user) {
       setPage("login");
@@ -179,7 +148,7 @@ function App() {
     setOrderLoading(true);
     setOrderMessage("");
 
-    // Group identical products into order rows
+    // Slår ihop identiska produkter innan beställning.
     const quantities = new Map();
 
     for (const product of cart) {
@@ -211,30 +180,24 @@ function App() {
         );
       }
 
-    const data = await response.json();
+      const data = await response.json();
 
-    setCart([]);
-    setOrderMessage(
-      `Order #${data.orderId} placed successfully!`
-    );
+      setCart([]);
+      setOrderMessage(
+        `Order #${data.orderId} placed successfully!`
+      );
 
-    await fetchProducts();
-  } catch (error) {
-    setOrderMessage(error.message);
-  } finally {
-    setOrderLoading(false);
-  }
-};
+      await fetchProducts();
+    } catch (error) {
+      setOrderMessage(error.message);
+    } finally {
+      setOrderLoading(false);
+    }
+  };
 
-
-  // ========================================
-  // RENDER
-  // ========================================
-
+  // Renderar appens vy beroende på vilken sida som är aktiv.
   return (
     <div className="app">
-
-      {/* NAVIGATION */}
       <header className="navbar">
         <h2>
           JENSEN<span>Online</span>
@@ -255,18 +218,16 @@ function App() {
 
           {!authLoading && user && (
             <button onClick={() => setPage("orders")}>
-            My Orders
+              My Orders
             </button>
           )}
 
-          {/* ADMIN ONLY */}
           {!authLoading && isAdmin && (
             <button onClick={() => setPage("admin")}>
               Admin Dashboard
             </button>
           )}
 
-          {/* AUTHENTICATION NAVIGATION */}
           {authLoading ? (
             <span>Checking session...</span>
           ) : !user ? (
@@ -291,13 +252,8 @@ function App() {
         </nav>
       </header>
 
-      {/* ========================================
-          HOME PAGE
-      ======================================== */}
-
       {page === "home" && (
         <>
-          {/* HERO SECTION */}
           <section className="hero">
             <h1>Technology made simple.</h1>
 
@@ -310,7 +266,6 @@ function App() {
             </a>
           </section>
 
-          {/* PRODUCTS SECTION */}
           <main id="products" className="products">
             <h2>Our Products</h2>
 
@@ -362,13 +317,10 @@ function App() {
         </>
       )}
 
-      
-      {/* SHOPPING CART PAGE */}
       {page === "cart" && (
         <section id="cart" className="cart-section">
           <h2>Shopping Cart ({cart.length})</h2>
 
-          {/* ORDER CONFIRMATION */}
           {orderMessage && (
             <p role="status" className="order-message">
               {orderMessage}
@@ -401,11 +353,12 @@ function App() {
                 {orderLoading
                   ? "Placing Order..."
                   : "Place Order"}
-              </button>{user && (
-  <button onClick={() => setPage("orders")}>
-    My Orders
-  </button>
-)}
+              </button>
+              {user && (
+                <button onClick={() => setPage("orders")}>
+                  My Orders
+                </button>
+              )}
             </>
           )}
 
@@ -418,11 +371,6 @@ function App() {
         </section>
       )}
 
-
-      {/* ========================================
-          LOGIN PAGE
-      ======================================== */}
-
       {page === "login" && (
         <Login
           onNavigate={setPage}
@@ -430,19 +378,11 @@ function App() {
         />
       )}
 
-      {/* ========================================
-          REGISTER PAGE
-      ======================================== */}
-
       {page === "register" && (
         <Register
           onNavigate={setPage}
         />
       )}
-
-      {/* ========================================
-          ADMIN DASHBOARD
-      ======================================== */}
 
       {page === "admin" && !authLoading && isAdmin && (
         <Admin
@@ -452,9 +392,8 @@ function App() {
       )}
 
       {page === "orders" && !authLoading && user && (
-      <MyOrders />
-)}
-
+        <MyOrders />
+      )}
     </div>
   );
 }

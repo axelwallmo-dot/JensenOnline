@@ -18,7 +18,7 @@ namespace JensenOnline.API.Controllers
         [HttpGet("csrf-token")]
         public IActionResult GetCsrfToken()
         {
-            // Prevent caching of the token response.
+            // Förhindrar cachning av CSRF-token.
             Response.Headers.CacheControl = "no-store";
 
             var tokens = _antiforgery.GetAndStoreTokens(

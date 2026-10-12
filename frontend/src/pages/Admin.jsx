@@ -15,7 +15,7 @@ function Admin({ products, onProductsChanged }) {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Reset form
+  // Återställer formuläret efter att redigering stängts.
   const resetForm = () => {
     setForm({
       name: "",
@@ -27,7 +27,7 @@ function Admin({ products, onProductsChanged }) {
     setEditingId(null);
   };
 
-  // Select a product to edit
+  // Fyller formuläret med produktens nuvarande värden.
   const handleEdit = (product) => {
     setEditingId(product.id);
 
@@ -42,7 +42,7 @@ function Admin({ products, onProductsChanged }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Create or update product
+  // Sparar eller uppdaterar produkten med validering.
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -132,7 +132,6 @@ function Admin({ products, onProductsChanged }) {
       <h1>Admin Dashboard</h1>
       <p>Manage JENSENOnline products.</p>
 
-      {/* PRODUCT FORM */}
       <div className="auth-card">
         <h2>
           {editingId !== null
@@ -240,7 +239,6 @@ function Admin({ products, onProductsChanged }) {
         {message && <p role="status">{message}</p>}
       </div>
 
-      {/* EXISTING PRODUCTS */}
       <h2>Existing Products</h2>
 
       <div className="product-grid">

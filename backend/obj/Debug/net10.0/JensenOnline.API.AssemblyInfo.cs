@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JensenOnline.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+071883ae4f6b85b6e794c05fcd42e0655cd0854e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+636186c72b3023ea36cc166a3051d186ca9385cb")]
 [assembly: System.Reflection.AssemblyProductAttribute("JensenOnline.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JensenOnline.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

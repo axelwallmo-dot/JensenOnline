@@ -8,13 +8,10 @@ using System.Security.Claims;
 
 namespace JensenOnline.API.Controllers
 {
-
     [ApiController]
     [Route("api/auth")]
     [AutoValidateAntiforgeryToken]
-    
     public class AuthController : ControllerBase
-
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -27,7 +24,7 @@ namespace JensenOnline.API.Controllers
             _signInManager = signInManager;
         }
 
-        // Registration request
+        // Modell för registrering.
         public class RegisterRequest
         {
             [Required]
@@ -38,7 +35,7 @@ namespace JensenOnline.API.Controllers
             public string Password { get; set; } = string.Empty;
         }
 
-        // Login request
+        // Modell för inloggning.
         public class LoginRequest
         {
             [Required]
@@ -49,7 +46,6 @@ namespace JensenOnline.API.Controllers
             public string Password { get; set; } = string.Empty;
         }
 
-        // REGISTER
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(
@@ -61,7 +57,6 @@ namespace JensenOnline.API.Controllers
                 Email = request.Email
             };
 
-            // Identity hashes and validates the password.
             var result = await _userManager.CreateAsync(
                 user,
                 request.Password
@@ -76,7 +71,7 @@ namespace JensenOnline.API.Controllers
                 });
             }
 
-            // New accounts always receive the Customer role.
+            // Tilldelar standardrollen Kund.
             var roleResult = await _userManager.AddToRoleAsync(
                 user,
                 "Customer"
@@ -98,7 +93,6 @@ namespace JensenOnline.API.Controllers
             });
         }
 
-        // LOGIN
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(
@@ -116,7 +110,6 @@ namespace JensenOnline.API.Controllers
                 });
             }
 
-            // Checks password and account lockout.
             var result = await _signInManager.PasswordSignInAsync(
                 user,
                 request.Password,
@@ -138,8 +131,7 @@ namespace JensenOnline.API.Controllers
                 Email = user.Email
             });
         }
-        
-        // LOGOUT
+
         [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
@@ -152,8 +144,6 @@ namespace JensenOnline.API.Controllers
             });
         }
 
-
-        // CHECK CURRENT SESSION
         [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> Me()

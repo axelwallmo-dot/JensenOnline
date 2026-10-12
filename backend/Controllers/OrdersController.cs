@@ -23,7 +23,7 @@ namespace JensenOnline.API.Controllers
             _context = context;
         }
 
-        // Data received from the shopping cart
+        // Modell för varukorgens produkter.
         public class OrderItemRequest
         {
             [Range(1, int.MaxValue)]
@@ -41,7 +41,6 @@ namespace JensenOnline.API.Controllers
             public List<OrderItemRequest> Items { get; set; } = new();
         }
 
-        // CREATE ORDER
         [HttpPost]
         public async Task<IActionResult> CreateOrder(
             [FromBody] CreateOrderRequest request)
@@ -63,7 +62,7 @@ namespace JensenOnline.API.Controllers
                 });
             }
 
-            // Combine duplicate products
+            // Slår ihop likadana produkter i en order.
             var requestedItems = request.Items
                 .GroupBy(item => item.ProductId)
                 .Select(group => new
@@ -86,7 +85,7 @@ namespace JensenOnline.API.Controllers
                 });
             }
 
-            // Keep stock updates and order creation together
+            // Säkerställer att lagersaldo och order sparas tillsammans.
             await using var transaction =
                 await _context.Database.BeginTransactionAsync(
                     IsolationLevel.Serializable
@@ -116,7 +115,6 @@ namespace JensenOnline.API.Controllers
                     });
                 }
 
-                // Atomic stock update
                 var updatedRows = await _context.Products
                     .Where(p =>
                         p.Id == item.ProductId &&
@@ -164,7 +162,6 @@ namespace JensenOnline.API.Controllers
             });
         }
 
-        // GET MY ORDERS
         [HttpGet("my")]
         public async Task<IActionResult> GetMyOrders()
         {
@@ -197,7 +194,6 @@ namespace JensenOnline.API.Controllers
             return Ok(orders);
         }
 
-        // GET A SPECIFIC ORDER
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetOrder(int id)
         {

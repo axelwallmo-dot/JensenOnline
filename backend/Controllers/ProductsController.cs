@@ -18,7 +18,7 @@ namespace JensenOnline.API.Controllers
             _context = context;
         }
 
-        // Anyone can view products
+        // Alla kan visa produkter.
         [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
@@ -31,7 +31,7 @@ namespace JensenOnline.API.Controllers
             return Ok(products);
         }
 
-        // Anyone can view one product
+        // Alla kan visa en enskild produkt.
         [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
@@ -51,7 +51,7 @@ namespace JensenOnline.API.Controllers
             return Ok(product);
         }
 
-        // ADMIN ONLY
+        // Endast administratörer kan skapa produkter.
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Product>> CreateProduct(
@@ -69,7 +69,7 @@ namespace JensenOnline.API.Controllers
             );
         }
 
-        // ADMIN ONLY
+        // Endast administratörer kan uppdatera produkter.
         [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateProduct(
